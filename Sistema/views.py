@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
-from .models import Cliente
-from .forms import CrearCliente
+from .models import Perfil
+from .forms import SignUpForm
 """from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm"""
@@ -9,9 +9,9 @@ from django.core import serializers
 import json
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 
 # Create your views here.
 def inicio(request):
@@ -21,18 +21,29 @@ def inicio(request):
 def base_layout(request):
     return render(request,"maqueta.html")
 
+'''class registroCliente(CreateView):
+    model = Perfil
+    form_class = SignUpForm
 
+    def form_valid(self, form):
+        
+        En este parte, si el formulario es valido guardamos lo que se obtiene de él y usamos authenticate para que el usuario incie sesión luego de haberse registrado y lo redirigimos al index
+        
+        form.save()
+        usuario = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        usuario = authenticate(username=usuario, password=password)
+        login(self.request, usuario)
+        return redirect('inicio')
+'''
 
 def registroCliente(request):
-    form=CrearCliente(request.POST or None)
+    form=SignUpForm(request.POST or None)
     if form.is_valid():
-        datos=form.cleaned_data
-        regDb=Cliente(rut=datos.get("rut"),nombre=datos.get("nombre"),apellido=datos.get("apellido"),
-        telefono=datos.get("telefono"),correo=datos.get("correo"))
-        regDb.save()
-    cliente=Cliente.objects.all()
+        form.save()
+    user=User.objects.all()
     contexto={
-        'cliente':cliente,
+        'user':User,
         'form':form,
     }
     return render (request,"registroCliente.html",contexto)

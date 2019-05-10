@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
+from .views import registroCliente
 
 urlpatterns=[
     url(r'^$',views.inicio,name="inicio"),
